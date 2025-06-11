@@ -1,0 +1,7 @@
+Verilog_bench/obj_dir/
+*.lst
+*.p
+*.bin
+*.hex
+*.map
+HW/padauk-pgm-backups/
