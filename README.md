@@ -8,4 +8,4 @@ This project is not yet the simplest possible programmer, just a jumping off poi
 
 Included in this repo is also a primitive Verilog model of this MCU, together with a verilator testbench to help me test my code before I burn it onto a OTP device.
 
-I also added support for PDK13 devices to my fork of the AS Assembler. [Check it out here.](https://github.com/AvalonSemiconductors/asl-avalonsemi/tree/avalonsemi).
+I also added support for PDK13 devices to my fork of the AS Assembler. [Check it out here.](https://github.com/AvalonSemiconductors/asl-avalonsemi/tree/avalonsemi)
