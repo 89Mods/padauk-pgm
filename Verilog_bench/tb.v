@@ -27,6 +27,14 @@ assign pa[5] = pa_oeb[5] ? 1'bz : pa_out[5];
 assign pa[6] = pa_oeb[6] ? 1'bz : pa_out[6];
 assign pa[7] = pa_oeb[7] ? 1'bz : pa_out[7];
 
+// SPI-specific setup
+wire SDIO = pa[4];
+wire CSB = pa[5];
+wire SCLK = pa[6];
+reg SD = 0;
+always @(negedge SCLK) SD <= $random();
+assign pa[4] = pa_oeb[4] ? SD : 1'bz;
+
 pmc150 pmc150(
 	.clk(clk),
 	.pa_out(pa_out),

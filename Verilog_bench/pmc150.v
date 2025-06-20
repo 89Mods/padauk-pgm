@@ -170,6 +170,11 @@ reg [7:0] paph = 0;
 reg [7:0] misc = 0;
 reg ie = 0;
 
+reg [7:0] tm2c;
+reg [7:0] tm2ct;
+reg [7:0] tm2b;
+reg [7:0] tm2s;
+
 reg [13:0] wdt = 0;
 reg [13:0] wdt_timeout;
 always @(*) begin
@@ -194,12 +199,16 @@ always @(*) begin
 		4: io_rval = {5'h00, timer_inten, 1'b0, pa0_inten};
 		5: io_rval = {5'h00, timer_irq, 1'b0, pa0_irq};
 		6: io_rval = t16m;
+		9: io_rval = tm2b;
 		12: io_rval = integs;
 		13: io_rval = padier;
-		16: io_rval = pa;
+		16: io_rval = (pa_in & ~pac) | (pa & pac);
 		17: io_rval = pac;
 		18: io_rval = paph;
+		23: io_rval = tm2s;
 		27: io_rval = misc;
+		28: io_rval = tm2c;
+		29: io_rval = tm2ct;
 	endcase
 end
 
@@ -310,6 +319,10 @@ always @(posedge clk) begin
 					wdt <= 0;
 					ie <= 0;
 					tclkdiv <= 0;
+					tm2c <= 0;
+					tm2ct <= 0;
+					tm2b <= 0;
+					tm2s <= 0;
 				end
 				6: begin
 					//STOPSYS
@@ -341,7 +354,7 @@ always @(posedge clk) begin
 		end
 		
 		if(br_instr && instr[10]) begin
-			RAM[SP[5:1]] <= PC;
+			RAM[SP[5:1]] <= PC + 1;
 			SP <= SP + 2;
 		end
 		
@@ -370,6 +383,8 @@ always @(posedge clk) begin
 			if(misc_op == 1) C <= subc[8];
 			if(misc_op == 2) C <= inc[8];
 			if(misc_op == 3) C <= dec[8];
+			if(misc_op == 10 || misc_op == 12) C <= A[0];
+			if(misc_op == 11 || misc_op == 13) C <= A[7];
 			if(misc_op < 4 || misc_op == 8 || misc_op == 9) Z <= misc_newA == 0;
 		end
 		
@@ -426,12 +441,16 @@ always @(posedge clk) begin
 					pa0_irq <= wval[0];
 				end
 				6: t16m <= wval;
+				9: tm2b <= wval;
 				12: integs <= wval;
 				13: padier <= wval;
 				16: pa <= wval;
 				17: pac <= wval;
 				18: paph <= wval;
+				23: tm2s <= wval;
 				27: misc <= wval;
+				28: tm2c <= wval;
+				29: tm2ct <= wval;
 			endcase
 		end
 	end
